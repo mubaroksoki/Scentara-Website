@@ -1,62 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recommendation Result</title>
+  <link rel="stylesheet" href="css/scent-matcher/scent-result.css">
 </head>
-
 <body>
-
-  <head>
-    <link rel="stylesheet" href="css/scent-matcher/scent-result.css">
-  </head>
   <header>
     <%- include('partials/header-login.ejs') %>
   </header>
 
   <h1 class="main-heading">This Scent Screams You!</h1>
 
-  <div class="content-container">
-    <div class="product-card">
-      <img src="/api/placeholder/400/320" alt="Chantilly Lace Perfume" class="product-image">
-      <h3 class="brand-name">Avicenna</h3>
-      <h2 class="product-name">Chantilly Lace</h2>
-      <a href="#" class="website-link">website link</a>
+  <div class="content-container" id="recommendation-container">
+    <!-- Akan diisi oleh JS -->
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+  const resultData = JSON.parse(localStorage.getItem("recommendation_result"));
+  const container = document.getElementById("recommendation-container");
+
+  if (!resultData || !Array.isArray(resultData) || resultData.length === 0) {
+    container.innerHTML = `
+      <div class="no-result">
+        <p>No recommendations found.</p>
+        <button class="take-quiz-again" onclick="takeQuizAgain()">Take Quiz Again</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Pilih parfum secara acak dari resultData
+  const shuffled = resultData.sort(() => 0.5 - Math.random());
+  const randomPerfume = shuffled[0];
+
+  // Tampilkan loading
+  container.innerHTML = `
+    <div class="loading-content">
+      <p>Loading perfume details...</p>
     </div>
+  `;
 
-    <div class="product-details">
-      <h2 class="product-title">Chantilly Lace</h2>
-      <p class="product-description">Sweet, creamy, and undeniably feminine</p>
+  try {
+    // Fetch detail parfum dari API berdasarkan ID random
+    const response = await fetch(
+      `Link Backend API Endpoint${randomPerfume.id}`
+    );
+    
+    const detailResult = await response.json();
+    
+    if (detailResult.error) {
+      throw new Error(detailResult.message);
+    }
 
-      <div class="fragrance-notes">
-        <h4 class="notes-title">Fragrance Notes</h4>
-        <p class="notes-description">Aroma dimulai dengan sentuhan buah segar, diikuti kehangatan floral yang lembut, dan diikuti dengan jejak manis dari vanilla yang tahan lama.</p>
+    const perfumeDetail = detailResult.data;
+    
+    // Generate random colors for fragrance notes
+    const colors = ['#4CAF50', '#E91E63', '#FF9800', '#2196F3', '#9C27B0', '#FF5722'];
+    const fragranceNotes = perfumeDetail.fragrance_notes ? perfumeDetail.fragrance_notes.split(', ') : [];
+    
+    container.innerHTML = `
+      <div class="product-image-container">
+        <img src="${perfumeDetail.image_url}" alt="${perfumeDetail.name}" 
+             class="product-image" 
+             onerror="this.src='/img/placeholder-perfume.jpg'">
+        <div class="brand-name">${perfumeDetail.brand_name}</div>
+        <div class="product-name">${perfumeDetail.name}</div>
+        <a href="${perfumeDetail.external_link}" target="_blank" class="external-link-btn">
+          Visit Store
+        </a>
       </div>
 
-      <div class="profile-aroma">
-        <h4 class="notes-title">Profile Aroma</h4>
-        <div class="aroma-icons">
-          <div class="aroma-item">
-            <div class="aroma-circle fruity"></div>
-            <span class="aroma-label">Fruity</span>
+      <div class="product-details">
+        <div class="detail-section">
+          <div class="detail-title">${perfumeDetail.name}</div>
+          <div class="detail-content">${perfumeDetail.brand_name}</div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-title">Description</div>
+          <div class="detail-content">${perfumeDetail.description}</div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-title">Notes</div>
+          <div class="notes-container">
+            ${fragranceNotes.map((note, index) => `
+              <div class="note-circle" style="background-color: ${colors[Math.floor(Math.random() * colors.length)]}">
+                ${note.trim().charAt(0).toUpperCase()}
+              </div>
+            `).join('')}
           </div>
-          <div class="aroma-item">
-            <div class="aroma-circle gourmand"></div>
-            <span class="aroma-label">Gourmand</span>
+          <div class="detail-content" style="margin-top: 0.5rem;">
+            ${perfumeDetail.fragrance_notes}
           </div>
         </div>
-      </div>
 
-      <div class="price-section">
-        <h4 class="price-title">Harga</h4>
-        <!-- Price would go here -->
-      </div>
+        <div class="detail-section">
+          <div class="detail-title">Price</div>
+          <div class="price">$${perfumeDetail.price}</div>
+        </div>
 
-      <button class="add-wishlist">Add Whislist</button>
+        <div class="action-buttons">
+          <button class="add-wishlist" onclick="addToWishlist(${perfumeDetail.id})">
+            Add Wishlist
+          </button>
+          <button class="take-quiz-again" onclick="takeQuizAgain()">
+            Take Quiz Again
+          </button>
+        </div>
+      </div>
+    `;
+
+  } catch (error) {
+    console.error('Error fetching perfume details:', error);
+    container.innerHTML = `
+      <div class="no-result">
+        <p>Failed to load perfume details: ${error.message}</p>
+        <button class="take-quiz-again" onclick="takeQuizAgain()">Take Quiz Again</button>
+      </div>
+    `;
+  }
+});
+
+async function addToWishlist(perfumeId) {
+  const auth_token = localStorage.getItem('token');
+  
+  if (!auth_token) {
+    alert('Please login first to add to wishlist');
+    return;
+  }
+
+  // Show loading
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.className = 'loading';
+  loadingIndicator.innerHTML = `
+    <div class="loading-content">
+      <p>Adding to wishlist...</p>
     </div>
-  </div>
-</body>
+  `;
+  document.body.appendChild(loadingIndicator);
 
+  try {
+    const response = await fetch(
+      'Link Backend API Endpoint',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth_token}`
+        },
+        body: JSON.stringify({ parfum_id: perfumeId })
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.error) {
+      if (result.message === "Parfum already in wishlist") {
+        alert('This perfume is already in your wishlist.');
+      } else if (result.message === "Parfum not found") {
+        alert('Perfume not found.');
+      } else {
+        alert(`Failed to add to wishlist: ${result.message}`);
+      }
+    } else {
+      alert('Added to wishlist successfully!');
+      window.location.href = '/home';
+    }
+  } catch (error) {
+    console.error('Wishlist error:', error);
+    alert(`Failed to add to wishlist: ${error.message}`);
+  } finally {
+    document.body.removeChild(loadingIndicator);
+  }
+}
+
+function takeQuizAgain() {
+  // Clear previous quiz data
+  ['birth_date', 'gender', 'fragrance_profiles', 'recommendation_result'].forEach(key => {
+    localStorage.removeItem(key);
+  });
+  window.location.href = '/scent-matcher-login';
+}
+</script>
+</body>
 </html>

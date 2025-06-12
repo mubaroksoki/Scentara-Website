@@ -10,18 +10,18 @@
     <link rel="stylesheet" href="css/scent-matcher/quetion-page3.css">
 </head>
 <body>
-   <% if (!showPage8) { %>
+   <% if (!showPage4) { %>
     <%- include('partials/header-login.ejs') %>
   <% } %>
 
   <main>
-    <% if (showPage5) { %>
+    <% if (showPage1) { %>
       <%- include('partials/scent-matcher-login/q1-page.ejs') %>
-    <% } else if (showPage6) { %>
+    <% } else if (showPage2) { %>
       <%- include('partials/scent-matcher-login/q2-page.ejs') %>
-    <% } else if (showPage7) { %>
+    <% } else if (showPage3) { %>
       <%- include('partials/scent-matcher-login/q3-page.ejs') %>
-    <% } else if (showPage8) { %>
+    <% } else if (showPage4) { %>
       <%- include('scent-result-login.ejs') %>
     <% } else { %>
       <%- include('partials/scent-matcher-login/main-matcher-login.ejs') %>

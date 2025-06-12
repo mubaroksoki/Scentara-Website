@@ -5,6 +5,17 @@
 </div>
 
 <form action="/scent-matcher-login" method="get">
-  <input type="hidden" name="page" value="5">
+  <input type="hidden" name="page" value="1">
   <button class="quiz-button">Take Quiz</button>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quizButton = document.querySelector('.quiz-button');
+  
+  quizButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/scent-matcher-login?page=1';
+  });
+});
+</script>

@@ -6,6 +6,10 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
+// Middleware untuk parsing JSON dan URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -45,6 +49,15 @@ app.get("/catalog-login", (req, res) => {
 app.get("/register-success", (req, res) => {
   const message = req.query.message || "User registered successfully";
   res.render("register-success", {
+    title: "Register Success",
+    logo: "Scentara",
+    message,
+  });
+});
+
+app.get("/signup-success-at-matcher", (req, res) => {
+  const message = req.query.message || "User registered successfully";
+  res.render("signup-success-at-matcher", {
     title: "Register Success",
     logo: "Scentara",
     message,
@@ -92,21 +105,56 @@ app.get("/scent-matcher", (req, res) => {
   });
 });
 
+app.get("/scent-result-login", (req, res) => {
+  res.render("scent-result-login", {
+    title: "Scent Result",
+    logo: "Scentara",
+    request: req,
+  });
+});
+
+app.get("/sign-in-at-matcher", (req, res) => {
+  res.render("sign-in-at-matcher", {
+    title: "Scent Result",
+    logo: "Scentara",
+    request: req,
+  });
+});
+
 app.get("/scent-matcher-login", (req, res) => {
   const page = req.query.page;
-  const showPage5 = page === "5";
-  const showPage6 = page === "6";
-  const showPage7 = page === "7";
-  const showPage8 = page === "8";
+  const showPage1 = page === "1";
+  const showPage2 = page === "2";
+  const showPage3 = page === "3";
+  const showPage4 = page === "4";
 
   res.render("scent-matcher-login", {
     title: "Scent Matcher",
     logo: "Scentara",
     request: req,
-    showPage5,
-    showPage6,
-    showPage7,
-    showPage8,
+    showPage1,
+    showPage2,
+    showPage3,
+    showPage4,
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("error", {
+    title: "Error",
+    logo: "Scentara",
+    message: "Something went wrong!",
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render("404", {
+    title: "Page Not Found",
+    logo: "Scentara",
+    message: "The page you're looking for doesn't exist.",
   });
 });
 

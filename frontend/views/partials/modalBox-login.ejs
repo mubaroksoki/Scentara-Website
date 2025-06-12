@@ -1,0 +1,211 @@
+
+<div id="modalBox">
+  <div class="modals">
+    <h2>Update Data Pengguna</h2>
+    <form id="updateForm">
+      <div>
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="gender">Gender:</label><br>
+        <select id="gender" name="gender" required>
+          <option value="">Choose</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div>
+        <label for="birth_date">Birth of Date:</label><br>
+        <input type="date" id="birth_date" name="birth_date" required>
+      </div>
+      <button type="submit" class="glass-btn">Update</button>
+      <button type="button" class="glass-btn cancel" onclick="document.getElementById('modalBox').style.display='none'">Batal</button>
+    </form>
+  </div>
+  <style>
+  #modalBox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.18);
+    z-index: 9999;
+    padding: 0;
+  }
+
+  .modals {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px 0 rgba(60, 60, 60, 0.18);
+    border: 1px solid #eee;
+    padding: 24px 28px 22px 28px;
+    width: 400px;
+    max-width: 95vw;
+    min-width: 260px;
+    color: #333;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @media (max-width: 576px) {
+    .modals {
+      width: 98vw;
+      min-width: unset;
+      padding: 16px 4vw;
+    }
+  }
+
+  .modals h2 {
+    margin-top: 0;
+    color: #e75480;
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: 1.15em;
+    padding-bottom: 25px;
+  }
+
+  .modals form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .modals label {
+    color: #444;
+    font-weight: 500;
+    font-size: 0.97em;
+    margin-bottom: 3px;
+    display: inline-block;
+  }
+
+  .modals input[type="text"],
+  .modals input[type="email"],
+  .modals input[type="date"],
+  .modals select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+    color: #222;
+    font-size: 1em;
+    outline: none;
+    box-shadow: none;
+    transition: border 0.2s;
+  }
+
+  .modals input[type="text"]:focus,
+  .modals input[type="email"]:focus,
+  .modals input[type="date"]:focus,
+  .modals select:focus {
+    border: 1.5px solid #e75480;
+    background: #fff;
+  }
+
+  .modals select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: #fafafa url('data:image/svg+xml;utf8,<svg fill="gray" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center/18px 18px;
+  }
+
+  .glass-btn {
+    background: #e75480;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 14px;
+    margin-right: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 2px 8px 0 rgba(231, 84, 128, 0.08);
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .glass-btn.cancel {
+    background: #f3f3f3;
+    color: #e75480;
+    border: 1px solid #e75480;
+    margin-right: 0;
+  }
+
+  .glass-btn:hover {
+    background: #c93c6b;
+    color: #fff;
+  }
+
+  .glass-btn.cancel:hover {
+    background: #e75480;
+    color: #fff;
+  }
+
+  .modals button {
+    margin-top: 8px;
+  }
+
+  .modals form>div {
+    display: flex;
+    flex-direction: column;
+  }
+  </style>
+</div>
+
+<script>
+  document.getElementById("updateForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const gender = document.getElementById("gender").value;
+    const birth_date = document.getElementById("birth_date").value;
+
+    const data = { name, gender, birth_date };
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Anda belum login!");
+      return;
+    }
+
+    try {
+      const response = await fetch("Link Backend API Endpoint", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.error === false) {
+        alert("✅ " + result.message);
+
+        // Update nama di halaman juga (jika ada elemen yg menampilkan nama)
+        const nameDisplay = document.getElementById("username-placeholder");
+        if (nameDisplay) nameDisplay.textContent = name;
+
+        // Tutup modal
+        document.getElementById("modalBox").style.display = "none";
+      } else {
+        // Cek jika pesan error spesifik dari backend
+        if (result.message === "Invalid or expired token") {
+          alert("⚠️ Token tidak valid atau sudah kadaluarsa. Silakan login ulang.");
+          localStorage.removeItem("token");
+          // Redirect ke halaman login jika perlu
+          // window.location.href = "/login";
+        } else {
+          alert("⚠️ Gagal update: " + (result.message || result.error || "Unknown error"));
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Terjadi kesalahan koneksi ke server.");
+    }
+  });
+</script>

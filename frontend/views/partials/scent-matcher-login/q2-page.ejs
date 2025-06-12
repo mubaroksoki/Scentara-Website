@@ -1,30 +1,100 @@
-  <h2>Notes parfum yang kamu sukai</h2>
+<div class="container">
+        <h2>Notes parfum yang kamu sukai</h2>
 
-  <div class="container">
-    <div class="note">Floral</div>
-    <div class="note">Green</div>
-    <div class="note">Spices</div>
-    <div class="note">Skin/Musk</div>
-    <div class="note">Aromatic</div>
-    <div class="note">Watery</div>
-    <div class="note">Gourmand</div>
-    <div class="note">Woody / Moss</div>
-    <div class="note">Fruity</div>
-    <div class="note">Amber/Balsamic</div>
-  </div>
+        <form action="/scent-matcher-login" method="get">
+            <input type="hidden" name="page" value="2" />
+            <div class="notes-container">
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Floral">
+                    <span>Floral</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Green">
+                    <span>Green</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Spices">
+                    <span>Spices</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Skin/Musk">
+                    <span>Skin/Musk</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Aromatic">
+                    <span>Aromatic</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Watery">
+                    <span>Watery</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Gourmand">
+                    <span>Gourmand</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Woody / Moss">
+                    <span>Woody / Moss</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Fruity">
+                    <span>Fruity</span>
+                </label>
+                <label class="note">
+                    <input type="checkbox" name="notes" value="Amber/Balsamic">
+                    <span>Amber/Balsamic</span>
+                </label>
+            </div>
+        </form>
 
-  
-
-  <form action="/scent-matcher-login" method="get" style="display: inline-block;">
-        <input type="hidden" name="page" value="5" />
         <div class="buttons">
-                <button>Back</button>
+            <form action="/scent-matcher-login" method="get">
+                <input type="hidden" name="page" value="1" />
+                <button type="submit" >Back</button>
+            </form>
+            
+            <form action="/scent-matcher-login" method="get">
+                <input type="hidden" name="page" value="3" />
+                <button type="submit" >Next</button>
+            </form>
         </div>
-    </form>
+    </div>
 
-    <form action="/scent-matcher-login" method="get" style="display: inline-block;">
-    <input type="hidden" name="page" value="7" />
-     <div class="buttons">
-          <button>Next</button>
-      </div>
-    </form>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+
+  const noteMap = {
+    "Floral": 1, "Green": 2, "Spices": 3, "Skin/Musk": 4,
+    "Aromatic": 5, "Watery": 6, "Gourmand": 7, "Woody / Moss": 8,
+    "Fruity": 9, "Amber/Balsamic": 10
+  };
+
+  // Fungsi untuk menyimpan notes yang dipilih
+  const saveSelectedNotes = () => {
+    const checkboxes = document.querySelectorAll('input[name="notes"]:checked');
+    const selectedNotes = Array.from(checkboxes).map(cb => noteMap[cb.value]);
+    localStorage.setItem("fragrance_profiles", JSON.stringify(selectedNotes));
+  };
+
+  // Set event listener untuk semua checkbox
+  document.querySelectorAll('input[name="notes"]').forEach(checkbox => {
+    checkbox.addEventListener('change', saveSelectedNotes);
+  });
+
+  // Load pilihan sebelumnya jika ada
+  const savedProfiles = JSON.parse(localStorage.getItem("fragrance_profiles") || "[]");
+  const reverseNoteMap = Object.entries(noteMap).reduce((acc, [name, id]) => {
+    acc[id] = name;
+    return acc;
+  }, {});
+
+  savedProfiles.forEach(id => {
+    const noteName = reverseNoteMap[id];
+    const checkbox = document.querySelector(`input[value="${noteName}"]`);
+    if (checkbox) checkbox.checked = true;
+  });});
+
+  //ya begitulah
+</script>
+

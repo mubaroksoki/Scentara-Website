@@ -217,80 +217,189 @@ nav ul li i:hover {
     grid-row: 3 / 5;
 }
 
-/* Wishlist Section Styles */
 .wishlist-section {
     background-color: #E4F5FF;
-    padding: 40px 0 60px;
+    padding: 50px 0 70px;
 }
 
 .wishlist-container {
     width: 90%;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .wishlist-container h2 {
     color: #333;
     text-align: center;
-    font-size: 2rem;
-    margin-bottom: 30px;
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    font-weight: 600;
 }
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+    padding: 0 20px;
+    justify-items: center;
 }
 
 .product-card {
-    background-color: white;
-    border-radius: 12px;
+    background: #fff;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 10px;
+    box-shadow: 0 6px 25px rgba(85, 73, 134, 0.12), 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    width: 100%;
+    max-width: 280px;
+    min-height: 350px;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(85, 73, 134, 0.18), 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .product-img {
-    height: 150px;
-    border-radius: 8px;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f1f3ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 
 .product-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img img {
+    transform: scale(1.05);
 }
 
 .product-info {
+    padding: 20px 18px;
     text-align: center;
-    padding: 10px 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #554986;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+    height: 2.6em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
 }
 
 .product-info p {
     font-size: 0.9rem;
-    color: #333;
+    color: #666;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.product-info p:first-of-type {
+    font-weight: 500;
+    color: #444;
+}
+
+.product-info p:last-of-type {
+    font-size: 1rem;
+    color: #e94057;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+/* Remove button styling */
+.remove-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(233, 64, 87, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.product-card:hover .remove-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.remove-btn:hover {
+    background: #e94057;
+    transform: scale(1.1);
+}
+
+.remove-btn i {
+    color: white;
+    font-size: 14px;
+}
+
+/* Empty wishlist message */
+.product-grid p {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 15px;
+    border: 2px dashed #ccc;
+    margin: 20px 0;
 }
 
 .next-btn-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .next-btn {
-    background-color: #E6E1F9;
-    color: #554986;
+    background: linear-gradient(135deg, #554986 0%, #6b5b8a 100%);
+    color: white;
     border: none;
-    padding: 10px 40px;
-    border-radius: 5px;
+    padding: 15px 50px;
+    border-radius: 30px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(85, 73, 134, 0.3);
 }
 
 .next-btn:hover {
-    background-color: #D5CEF1;
+    background: linear-gradient(135deg, #6b5b8a 0%, #554986 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(85, 73, 134, 0.4);
 }
 
 /* Footer */

@@ -1,103 +1,166 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 40px 20px;
+}
 
- .container {
-   max-width: 800px;
-   margin: 0 auto;
-   width: 100%;
- }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  gap: 40px;
+}
 
- .header {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   margin-bottom: 30px;
- }
+.question {
+  font-size: 48px;
+  color: #2c1215;
+  max-width: 300px;
+  line-height: 1.1;
+  font-weight: normal;
+}
 
- .question {
-   font-size: 28px;
-   color: #000;
-   max-width: 300px;
- }
+.strength-selector {
+  background-color: #c4818c;
+  border-radius: 20px;
+  padding: 30px;
+  min-width: 400px;
+}
 
- .strength-options {
-   background-color: #c4818c;
-   border-radius: 15px;
-   padding: 20px;
-   display: flex;
-   justify-content: space-between;
-   gap: 15px;
- }
+.strength-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 15px;
+}
 
- .option {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   text-align: center;
- }
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
 
- .option-box {
-   width: 120px;
-   height: 150px;
-   border-radius: 15px 15px 0 0;
-   margin-bottom: 10px;
- }
+.option-box {
+  width: 100px;
+  height: 120px;
+  border-radius: 15px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
 
- .subtle {
-   background-color: #fff5f5;
- }
+.option-box:hover {
+  transform: translateY(-2px);
+}
 
- .balanced {
-   background-color: #ffc2c2;
- }
+.option-box.selected {
+  outline: 3px solid #2c1215;
+  outline-offset: 2px;
+}
 
- .strong {
-   background-color: #c73648;
- }
+.subtle {
+  background-color: #fff0f2;
+}
 
- .option-label {
-   color: white;
-   font-size: 22px;
- }
+.balanced {
+  background-color: #ffb8c5;
+}
 
- .style-options {
-   display: flex;
-   flex-direction: column;
-   margin-top: 20px;
-   width: 50%;
- }
+.strong {
+  background-color: #c73648;
+}
 
- .style-option {
-   color: white;
-   font-size: 24px;
-   padding: 50px 20px;
-   text-align: center;
- }
+.option-label {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
 
- .fresh {
-   background-color: #c4818c;
- }
+.style-options {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin: 40px 0;
+  gap: 0;
+}
 
- .seductive {
-   background-color: #5c2429;
- }
+.style-option {
+  color: white;
+  font-size: 32px;
+  padding: 60px 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  font-weight: bold;
+}
 
- .button-container {
-   display: flex;
-   justify-content: space-between;
-   margin-top: 40px;
- }
+.style-option:hover {
+  opacity: 0.9;
+}
 
- .button {
-   background-color: #c4818c;
-   color: white;
-   border: none;
-   border-radius: 30px;
-   padding: 15px 40px;
-   font-size: 22px;
-   cursor: pointer;
-   text-align: center;
-   text-decoration: none;
- }
+.style-option.selected {
+  outline: 4px solid #2c1215;
+  outline-offset: -4px;
+}
 
- .button:hover {
-   background-color: #a86d76;
- }
+.fresh {
+  background-color: #c4818c;
+}
+
+.seductive {
+  background-color: #5c2429;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+}
+
+.button {
+  background-color: #c4818c;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 35px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #a86d76;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .question {
+    font-size: 36px;
+    max-width: 100%;
+  }
+
+  .strength-selector {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .style-options {
+    width: 100%;
+  }
+
+  .style-option {
+    font-size: 28px;
+    padding: 50px 30px;
+  }
+}

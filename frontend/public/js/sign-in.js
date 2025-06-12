@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     eyeClosed.style.display = isHidden ? "inline" : "none";
   });
 
-  // Login request
   signInButton.addEventListener("click", async (e) => {
     e.preventDefault();
 
@@ -27,19 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(
-        "http://backend-env.eba-y88id5fn.us-east-1.elasticbeanstalk.com/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-          }),
-        }
-      );
+      const response = await fetch("Link Backend API Endpoint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
 
       const result = await response.json();
 

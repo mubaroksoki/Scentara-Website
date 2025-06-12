@@ -6,263 +6,357 @@
       <li><a href="/catalog-login">Catalogue</a></li>
       <li><a href="/scent-matcher-login">Scent Matcher</a></li>
       <li><a href="/fragrance-login">Fragrance</a></li>
-      <li>
-        <div class="header-icons-container">
-    <div class="user-icon" id="userIconBtn" title="User Icon"></div>
-    <div id="userMenu" style="display:none; position:absolute; left:50%; top:32px; transform:translateX(-50%); background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 4px 16px rgba(60,60,60,0.12); min-width:140px; z-index:1000;">
-      <% if (request.originalUrl === '/home') { %>
-        <div style="position:absolute; top:-10px; left:35%; transform:translateX(-50%); width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-bottom:10px solid #fff; filter:drop-shadow(0 -2px 2px rgba(60,60,60,0.08));"></div>
-        <% } %>
-      <a href="#" id="editProfileBtn" style="display:block; padding:10px 18px; color:#333; text-decoration:none; border-bottom:1px solid #f3f3f3; transition:background 0.18s; border-top-left-radius:8px; border-top-right-radius:8px;">Edit Profile</a>
-      <a href='#' id="logoutBtn" style="display:block; padding:10px 18px; color:#e75480; text-decoration:none; transition:background 0.18s; border-bottom-left-radius:8px; border-bottom-right-radius:8px;">Log Out</a>
-      <style>
-      #userMenu a:hover {
-        background: #f3f3f3;
-      }
-
-      #userMenu a:first-child:hover {
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-      }
-
-      #userMenu a:last-child:hover {
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-      }
-      </style>
-    </div>
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Tambahkan event listener tombol logout di sini
-      const logoutBtn = document.getElementById("logoutBtn");
-      logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        // Arahkan ke index.ejs (biasanya ada di route "/")
-        window.location.href = "/";
-      });
-    });
-    </script>
-  </div>
-  <% if (request.originalUrl === '/catalog-login') { %>
-    <div class="magnifying" id="userIconBtn" title="Magnifying glass"></div>
-  <% } %>
-
-  
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var userIconBtn = document.getElementById('userIconBtn');
-    var userMenu = document.getElementById('userMenu');
-    var editProfileBtn = document.getElementById('editProfileBtn');
-    var modalBox = document.getElementById('modalBox');
-
-    if (userIconBtn && userMenu) {
-      userIconBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
-      });
-      document.addEventListener('click', function() {
-        userMenu.style.display = 'none';
-      });
-      userMenu.addEventListener('click', function(e) {
-        e.stopPropagation();
-      });
-    }
-    if (editProfileBtn && modalBox) {
-      editProfileBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        userMenu.style.display = 'none';
-        modalBox.style.display = 'block';
-      });
-    }
-  });
-  </script>
-  </div>
+      <li style="display: flex; align-items: center; position: relative;">
+        <div class="header-icons-container" style="display: flex; align-items: center; position: relative;">
+          <% if (request.originalUrl === '/home') { %>
+        <div class="user-icon user-menu-trigger" id="userIconBtn" title="User Icon" style="position: relative;"></div>
+          <% } else if (request.originalUrl === '/catalog-login') { %>
+            <div class="user-icon2 user-menu-trigger" id="userIconBtn" title="User Icon" style="position: relative; margin-left: 40px;"></div>
+            <% } else if (request.originalUrl === '/scent-result-login') { %>
+            <div style="position: relative; margin-left: 40px;">
+              <div class="user-icon user-menu-trigger" id="userIconBtn" title="User Icon" style="position: relative;"></div>
+              <div id="userMenu" class="user-menu-dropdown" style="display:none; top: 130%; left: 50%; transform: translateX(-50%);">
+              <div class="user-menu-arrow"></div>
+              <a href="#" id="editProfileBtn" class="user-menu-item">Edit Profile</a>
+              <a href="#" id="logoutBtn" class="user-menu-item logout">Log Out</a>
+              </div>
+            </div>
+            <% } else { %>
+            <div class="user-icon2 user-menu-trigger" id="userIconBtn" title="User Icon" style="position: relative;"></div>
+            <% } %>
+            <% if (request.originalUrl !== '/scent-result-login') { %>
+            <div id="userMenu" class="user-menu-dropdown" style="display:none; top: 130%; left: 50%; transform: translateX(-50%);">
+              <div class="user-menu-arrow"></div>
+              <a href="#" id="editProfileBtn" class="user-menu-item">Edit Profile</a>
+              <a href="#" id="logoutBtn" class="user-menu-item logout">Log Out</a>
+            </div>
+            <% } %>
+            </div>
+          <% if (request.originalUrl === '/catalog-login') { %>
+          <div class="magnifying" id="magnifyingBtn" title="Search Parfum" style="margin-left: 18px;"></div>
+          <% } %>
+        </div>
       </li>
     </ul>
     <style>
-    /* User icon and magnifying glass styling */
-        .user-icon, .magnifying {
-            width: 24px;
-            height: 24px;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            opacity: 0.8;
-        }
+      .user-icon,
+      .user-icon2,
+      .magnifying {
+        width: 28px;
+        height: 28px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        opacity: 0.8;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .user-icon {
+        background-image: url('../img/icon/icon-login.png');
+      }
+      .user-icon2 {
+        background-image: url('../img/icon/icon-user2-login.png');
+      }
+      .magnifying {
+        background-image: url('../img/icon/MagnifyingGlass.png');
+        margin-bottom: 6px;
+      }
+      .user-icon:hover,
+      .user-icon2:hover,
+      .magnifying:hover {
+        opacity: 1;
+        transform: scale(1.1);
+        filter: brightness(0) saturate(100%) invert(45%) sepia(25%) saturate(1234%) hue-rotate(315deg) brightness(90%) contrast(95%);
+      }
+      
+      /* User menu dropdown */
+      .user-menu-dropdown {
+        position: absolute;
+        left: 50%;
+        top: 110%;
+        transform: translateX(-50%);
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(60,60,60,0.12);
+        min-width: 140px;
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+        padding: 0;
+      }
 
-        .user-icon {
-            background-image: url('../img/icon/icon-login.png');
-        }
-
-        .magnifying {
-            background-image: url('../img/icon/MagnifyingGlass.png');
-        }
-
-        .user-icon:hover, .magnifying:hover {
-            opacity: 1;
-            transform: scale(1.1);
-            filter: brightness(0) saturate(100%) invert(45%) sepia(25%) saturate(1234%) hue-rotate(315deg) brightness(90%) contrast(95%);
-        }
+      .user-menu-arrow {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 10px solid #fff;
+        filter: drop-shadow(0 -2px 2px rgba(60,60,60,0.08));
+      }
+      .user-menu-item {
+        display: block;
+        padding: 10px 18px;
+        color: #333;
+        text-decoration: none;
+        border-bottom: 1px solid #f3f3f3;
+        transition: background 0.18s, color 0.18s;
+        border-radius: 0;
+      }
+      .user-menu-item:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      .user-menu-item:last-child {
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom: none;
+      }
+      .user-menu-item.logout {
+        color: #e75480;
+      }
+      .user-menu-item:hover,
+      .user-menu-item.logout:hover {
+        background: #e75480;
+        color: #fff;
+      }
+      /* Show menu on icon hover */
+      .header-icons-container:hover .user-menu-dropdown,
+      .user-menu-dropdown:hover {
+        display: flex !important;
+      }
     </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const userIconBtn = document.getElementById("userIconBtn");
+        const userMenu = document.getElementById("userMenu");
+        const editProfileBtn = document.getElementById("editProfileBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        // Show menu on hover
+        if (userIconBtn && userMenu) {
+          userIconBtn.addEventListener("mouseenter", () => {
+            userMenu.style.display = "flex";
+          });
+          userIconBtn.addEventListener("mouseleave", () => {
+            setTimeout(() => {
+              if (!userMenu.matches(':hover')) userMenu.style.display = "none";
+            }, 120);
+          });
+          userMenu.addEventListener("mouseleave", () => {
+            userMenu.style.display = "none";
+          });
+          userMenu.addEventListener("mouseenter", () => {
+            userMenu.style.display = "flex";
+          });
+
+          // Also allow click to toggle (for mobile)
+          userIconBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            userMenu.style.display = userMenu.style.display === "flex" ? "none" : "flex";
+          });
+        }
+
+        if (editProfileBtn) {
+          editProfileBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const modalBox = document.getElementById('modalBox');
+            if (modalBox) modalBox.style.display = 'block';
+            if (userMenu) userMenu.style.display = "none";
+          });
+        }
+
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("searchResult"); // Clear search results too
+            window.location.href = "/";
+          });
+        }
+
+        window.addEventListener('click', function(event) {
+          if (userIconBtn && userMenu && !userIconBtn.contains(event.target) && !userMenu.contains(event.target)) {
+            userMenu.style.display = 'none';
+          }
+        });
+      });
+    </script>
   </nav>
 
-</header>
-
-<div id="modalBox">
-  <div class="modals">
-    <h2>Update Data Pengguna</h2>
-    <form action="/update-user" method="POST">
-      <div>
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name" required>
-      </div>
-      <div>
-        <label for="gender">Gender:</label><br>
-        <select id="gender" name="gender" required>
-          <option value="">Choose</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
-      <div>
-        <label for="birth_date">Birth of Date:</label><br>
-        <input type="date" id="birth_date" name="birth_date" required>
-      </div>
-      <button type="submit" class="glass-btn">Update</button>
-      <button type="button" class="glass-btn cancel" onclick="document.getElementById('modalBox').style.display='none'">Batal</button>
-    </form>
+  <!-- ModalBox for Searching Parfum -->
+  <div id="searchModalBox" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.35); align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; border-radius:10px; padding:28px 32px 24px 32px; min-width:320px; max-width:90vw; box-shadow:0 8px 32px rgba(60,60,60,0.18); position:relative;">
+      <span id="closeSearchModal" style="position:absolute; top:14px; right:18px; font-size:22px; color:#888; cursor:pointer;">&times;</span>
+      <h3 style="margin-top:0; margin-bottom:18px; font-weight:600; color:#e75480;">Search Parfum</h3>
+      <form id="searchParfumForm" autocomplete="off" style="display:flex; gap:10px;">
+        <input type="text" id="searchParfumInput" name="search" placeholder="Type parfum name..." style="flex:1; padding:8px 12px; border:1px solid #ddd; border-radius:6px; font-size:15px;">
+        <button type="submit" style="background:#e75480; color:#fff; border:none; border-radius:6px; padding:8px 18px; font-weight:500; cursor:pointer;">Search</button>
+      </form>
+      <div id="searchResults" style="margin-top:18px;"></div>
+    </div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const magnifyingBtn = document.getElementById("magnifyingBtn");
+      const searchModalBox = document.getElementById("searchModalBox");
+      const closeSearchModal = document.getElementById("closeSearchModal");
+      const searchParfumForm = document.getElementById("searchParfumForm");
+      const searchParfumInput = document.getElementById("searchParfumInput");
+      const searchResults = document.getElementById("searchResults");
+
+      // Event listener for magnifying glass button
+      if (magnifyingBtn && searchModalBox) {
+        magnifyingBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          searchModalBox.style.display = "flex";
+          if (searchParfumInput) {
+            searchParfumInput.focus();
+            searchParfumInput.value = "";
+          }
+          if (searchResults) searchResults.innerHTML = "";
+          console.log("Search modal opened");
+        });
+      }
+
+      // Close modal events
+      if (closeSearchModal && searchModalBox) {
+        closeSearchModal.addEventListener("click", () => {
+          searchModalBox.style.display = "none";
+        });
+      }
+
+      if (searchModalBox) {
+        searchModalBox.addEventListener("click", (e) => {
+          if (e.target === searchModalBox) {
+            searchModalBox.style.display = "none";
+          }
+        });
+
+        // Close with ESC key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && searchModalBox.style.display === "flex") {
+            searchModalBox.style.display = "none";
+          }
+        });
+      }
+
+      // Search form submission
+      if (searchParfumForm && searchParfumInput && searchResults) {
+        searchParfumForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const query = searchParfumInput.value.trim();
+          
+          if (!query) {
+            searchResults.innerHTML = `<div style="color:#e75480;">Please enter a parfum name to search.</div>`;
+            return;
+          }
+
+          searchResults.innerHTML = `<div style="color:#888;">Searching for "<b>${query}</b>"...</div>`;
+
+          try {
+            const response = await fetch(`Link Backend API Endpoint${encodeURIComponent(query)}`);
+            
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Search response:", data);
+
+            // Check different response structures
+            let parfums = [];
+            if (data.parfums && Array.isArray(data.parfums)) {
+              parfums = data.parfums;
+            } else if (data.data && data.data.parfums && Array.isArray(data.data.parfums)) {
+              parfums = data.data.parfums;
+            } else if (Array.isArray(data)) {
+              parfums = data;
+            }
+
+            if (parfums.length > 0) {
+              localStorage.setItem("searchResult", JSON.stringify(parfums));
+              searchModalBox.style.display = "none";
+              
+              // If we're already on catalog page, trigger search display
+              if (window.location.pathname === '/catalog-login') {
+                // Trigger display of search results
+                if (window.searchParfums) {
+                  window.searchParfums(query);
+                } else {
+                  // Fallback: reload the page to show search results
+                  window.location.reload();
+                }
+              } else {
+                // Navigate to catalog page
+                window.location.href = `/catalog-login`;
+              }
+            } else {
+              searchResults.innerHTML = `<div style="color:#666;">No results found for "<b>${query}</b>". Try a different search term.</div>`;
+            }
+          } catch (err) {
+            console.error("Search error:", err);
+            searchResults.innerHTML = `<div style="color:#e75480;">Error searching parfum. Please check your connection and try again.</div>`;
+          }
+        });
+
+        // Real-time search suggestions (optional)
+        let searchTimeout;
+        searchParfumInput.addEventListener("input", function() {
+          clearTimeout(searchTimeout);
+          const query = this.value.trim();
+          
+          if (query.length >= 2) {
+            searchTimeout = setTimeout(async () => {
+              try {
+                const response = await fetch(`Link Backend API Endpoint=${encodeURIComponent(query)}`);
+                if (response.ok) {
+                  const data = await response.json();
+                  let parfums = [];
+                  if (data.parfums && Array.isArray(data.parfums)) {
+                    parfums = data.parfums;
+                  } else if (data.data && data.data.parfums && Array.isArray(data.data.parfums)) {
+                    parfums = data.data.parfums;
+                  }
+                  
+                  if (parfums.length > 0) {
+                    const suggestions = parfums.slice(0, 5).map(p => 
+                      `<div style="padding:5px; border-bottom:1px solid #eee; cursor:pointer;" onclick="document.getElementById('searchParfumInput').value='${p.name}'">${p.name} - ${p.brand_name}</div>`
+                    ).join('');
+                    searchResults.innerHTML = `<div style="font-size:12px; color:#666;">Suggestions:</div>${suggestions}`;
+                  }
+                }
+              } catch (err) {
+                // Silently handle suggestions error
+              }
+            }, 300);
+          } else if (query.length === 0) {
+            searchResults.innerHTML = "";
+          }
+        });
+      }
+    });
+  </script>
   <style>
-  #modalBox {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.18);
-    z-index: 9999;
-    padding: 0;
-  }
-
-  .modals {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px 0 rgba(60, 60, 60, 0.18);
-    border: 1px solid #eee;
-    padding: 24px 28px 22px 28px;
-    width: 400px;
-    max-width: 95vw;
-    min-width: 260px;
-    color: #333;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  @media (max-width: 576px) {
-    .modals {
-      width: 98vw;
-      min-width: unset;
-      padding: 16px 4vw;
+    .modal::-webkit-scrollbar { width: 8px; background: #f3f3f3; }
+    .modal::-webkit-scrollbar-thumb { background: #e75480; border-radius: 4px; }
+    #searchModalBox input:focus { outline: 1.5px solid #e75480; }
+    
+    /* Make search suggestions clickable */
+    #searchResults div[onclick] {
+      transition: background-color 0.2s;
     }
-  }
-
-  .modals h2 {
-    margin-top: 0;
-    color: #e75480;
-    text-align: center;
-    letter-spacing: 1px;
-    font-size: 1.15em;
-    padding-bottom: 25px;
-  }
-
-  .modals form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .modals label {
-    color: #444;
-    font-weight: 500;
-    font-size: 0.97em;
-    margin-bottom: 3px;
-    display: inline-block;
-  }
-
-  .modals input[type="text"],
-  .modals input[type="email"],
-  .modals input[type="date"],
-  .modals select {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fafafa;
-    color: #222;
-    font-size: 1em;
-    outline: none;
-    box-shadow: none;
-    transition: border 0.2s;
-  }
-
-  .modals input[type="text"]:focus,
-  .modals input[type="email"]:focus,
-  .modals input[type="date"]:focus,
-  .modals select:focus {
-    border: 1.5px solid #e75480;
-    background: #fff;
-  }
-
-  .modals select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background: #fafafa url('data:image/svg+xml;utf8,<svg fill="gray" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center/18px 18px;
-  }
-
-  .glass-btn {
-    background: #e75480;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 14px;
-    margin-right: 8px;
-    font-size: 1em;
-    cursor: pointer;
-    box-shadow: 0 2px 8px 0 rgba(231, 84, 128, 0.08);
-    transition: background 0.2s, color 0.2s;
-  }
-
-  .glass-btn.cancel {
-    background: #f3f3f3;
-    color: #e75480;
-    border: 1px solid #e75480;
-    margin-right: 0;
-  }
-
-  .glass-btn:hover {
-    background: #c93c6b;
-    color: #fff;
-  }
-
-  .glass-btn.cancel:hover {
-    background: #e75480;
-    color: #fff;
-  }
-
-  .modals button {
-    margin-top: 8px;
-  }
-
-  .modals form>div {
-    display: flex;
-    flex-direction: column;
-  }
+    #searchResults div[onclick]:hover {
+      background-color: #f5f5f5;
+    }
   </style>
-</div>
+</header>
+<%- include('modalBox-login.ejs') %>

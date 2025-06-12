@@ -1,146 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%- title %></title>
-    <link rel="stylesheet" href="css/home.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%- title %></title>
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
+
 <body>
-    <!-- Header Section -->
-    <%- include('partials/header-login.ejs') %>
+  <!-- Header Section -->
+  <%- include('partials/header-login.ejs') %>
 
-    <!-- Welcome Section -->
-    <section class="welcome-section">
-        <div class="welcome-container">
-            <div class="profile-images">
-                <div class="profile-img"><img src="img/home/pprt5.png" alt="Profile Image"></div>
-                <div class="profile-color"></div>
-                <div class="profile-color2"></div>
-                <div class="profile-img"><img src="img/home/pprt551.png" alt="Profile Image"></div>
-            </div>
-            <div class="welcome-text">
-                <h2>Hello, <span id="username-placeholder">Guest</span></h2>
-                <p>We know that there are many variants of perfume as a preference for the fragrance choice, it maybe your choice in this wishlist.</p>
-            </div>
+  <!-- Welcome Section -->
+  <section class="welcome-section">
+    <div class="welcome-container">
+      <div class="profile-images">
+        <div class="profile-img"><img src="img/home/pprt5.png" alt="Profile Image"></div>
+        <div class="profile-color"></div>
+        <div class="profile-color2"></div>
+        <div class="profile-img"><img src="img/home/pprt551.png" alt="Profile Image"></div>
+      </div>
+      <div class="welcome-text">
+        <h2>Hello, <span id="username-placeholder">Guest</span></h2>
+        <p>We know that there are many variants of perfume as a preference for the fragrance choice, it maybe your choice in this wishlist.</p>
+      </div>
 
-        </div>
+    </div>
+
+
+
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="gallery-section">
+    <div class="gallery-container">
+      <div class="gallery-item item1"><img src="img/home/smpr1.png" alt="Perfume"></div>
+      <div class="gallery-item item2"><img src="img/home/smpr2.png" alt="Perfume"></div>
+      <div class="gallery-item item3"><img src="img/home/smpr3.png" alt="Perfume"></div>
+      <div class="gallery-item item4"><img src="img/home/smpr4.png" alt="Perfume"></div>
+      <div class="gallery-item item5"><img src="img/home/smpr5.png" alt="Perfume"></div>
+      <div class="gallery-item item6"><img src="img/home/smpr6.png" alt="Perfume"></div>
+    </div>
+  </section>
+
+  <!-- Wishlist Section -->
+  <section class="wishlist-section">
+    <div class="wishlist-container">
+      <h2>My Wishlist</h2>
+      <div class="product-grid">
         <script>
-            const user = JSON.parse(localStorage.getItem("user"));
-            const nameElement = document.getElementById("username-placeholder");
+        async function loadUserProfile() {
+          const token = localStorage.getItem("token");
+          const nameElement = document.getElementById("username-placeholder");
+          const wishlistContainer = document.querySelector(".product-grid");
 
-            if (user && user.name) {
-                nameElement.textContent = user.name;
+          // Bersihkan wishlist sebelum render ulang
+          wishlistContainer.innerHTML = "";
+
+          if (!token) {
+            nameElement.textContent = "Guest";
+            wishlistContainer.innerHTML = `<p style="text-align:center; width:100%">Wishlist masih kosong.</p>`;
+            return;
+          }
+
+            try {
+            const response = await fetch("Link Backend API Endpoint", {
+              method: "GET",
+              headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+              }
+            });
+
+            const result = await response.json();
+
+            if (
+              !result.error &&
+              result.data &&
+              result.data.name
+            ) {
+              nameElement.textContent = result.data.name;
+
+              const wishlist = result.data.wishlist || [];
+              if (wishlist.length === 0) {
+              wishlistContainer.innerHTML = `<p style="text-align:center; width:100%">Wishlist masih kosong.</p>`;
+              } else {
+              wishlist.forEach(item => {
+                wishlistContainer.innerHTML += `
+                <div class="product-card" data-id="${item.id}">
+                <div class="product-img">
+                  <img src="${item.image_url}" alt="${item.name}">
+                </div>
+                <div class="product-info">
+                  <h3>${item.name}</h3>
+                  <p>Brand: ${item.brand_name}</p>
+                  <p>Price: $${item.price}</p>
+                </div>
+                <button class="remove-btn" title="Remove from wishlist" onclick="removeFromWishlist('${item.id}', this)">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                </div>
+                `;
+              });
+              }
+            } else if (
+              result.error &&
+              result.message === "Authentication required. Please login."
+            ) {
+              nameElement.textContent = "Guest";
+              wishlistContainer.innerHTML = `<p style="text-align:center; width:100%">Wishlist masih kosong.</p>`;
             } else {
-                nameElement.textContent = "Guest";
+              nameElement.textContent = "Guest";
+              wishlistContainer.innerHTML = `<p style="text-align:center; width:100%">Wishlist masih kosong.</p>`;
             }
+            } catch (error) {
+            console.error("Gagal mengambil profil:", error);
+            nameElement.textContent = "Guest";
+            wishlistContainer.innerHTML = `<p style="text-align:center; width:100%">Wishlist masih kosong.</p>`;
+            }
+          }
 
+        async function removeFromWishlist(itemId, btn) {
+          const token = localStorage.getItem("token");
+          if (!token) return;
+
+          try {
+            const response = await fetch(`Link Backend API Endpoint/${itemId}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              }
+            });
+            if (response.ok) {
+              // Remove card from DOM
+              const card = btn.closest('.product-card');
+              if (card) card.remove();
+              // Optionally reload if wishlist is empty
+              if (document.querySelectorAll('.product-card').length === 0) {
+                document.querySelector('.product-grid').innerHTML = `<p style="text-align:center; width:100%">Wishlist masih kosong.</p>`;
+              }
+            } else {
+              alert("Gagal menghapus parfum dari wishlist.");
+            }
+          } catch (error) {
+            alert("Terjadi kesalahan saat menghapus parfum.");
+          }
+        }
+
+        window.addEventListener("DOMContentLoaded", loadUserProfile);
         </script>
-    </section>
+      </div>
+      <div class="next-btn-container">
+        <button class="next-btn">Next</button>
+      </div>
+    </div>
+  </section>
 
-    <!-- Gallery Section -->
-    <section class="gallery-section">
-        <div class="gallery-container">
-            <div class="gallery-item item1"><img src="img/home/smpr1.png" alt="Perfume"></div>
-            <div class="gallery-item item2"><img src="img/home/smpr2.png" alt="Perfume"></div>
-            <div class="gallery-item item3"><img src="img/home/smpr3.png" alt="Perfume"></div>
-            <div class="gallery-item item4"><img src="img/home/smpr4.png" alt="Perfume"></div>
-            <div class="gallery-item item5"><img src="img/home/smpr5.png" alt="Perfume"></div>
-            <div class="gallery-item item6"><img src="img/home/smpr6.png" alt="Perfume"></div>
-        </div>
-    </section>
-
-    <!-- Wishlist Section -->
-    <section class="wishlist-section">
-        <div class="wishlist-container">
-            <h2>My Wishlist</h2>
-            <div class="product-grid">
-                <!-- Row 1 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                
-                <!-- Row 2 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                
-                <!-- Row 3 -->
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img">
-                        <img src="pink-perfume.jpg" alt="Pink Perfume">
-                    </div>
-                    <div class="product-info">
-                        <p>My Product</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="next-btn-container">
-                <button class="next-btn">Next</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer Section -->
-     <%- include('partials/footer.ejs') %>
+  <!-- Footer Section -->
+  <%- include('partials/footer.ejs') %>
 </body>
+
 </html>

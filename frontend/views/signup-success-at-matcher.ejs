@@ -119,8 +119,8 @@
                 <%- message %>
             </p>
             <div class="btn-container">
-                <a href="/sign-in" class="btn">Sign In Now</a>
-                <a href="/" class="btn btn-secondary">Back to Home</a>
+                <a href="/sign-in-at-matcher" class="btn">Sign In Now</a>
+                <a href="/main-matcher" class="btn btn-secondary">Back to Scent Matcher</a>
             </div>
         </div>
     </div>
@@ -141,7 +141,7 @@
                 
                 if (seconds < 0) {
                     clearInterval(timer);
-                    window.location.href = '/sign-in';
+                    window.location.href = '/sign-in-at-matcher';
                 }
             }, 1000);
         }, 3000);

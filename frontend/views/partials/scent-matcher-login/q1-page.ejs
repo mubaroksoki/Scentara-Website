@@ -1,44 +1,116 @@
+ <div class="container">
+   <h1>How Old Are You?</h1>
+   <p class="subtitle">We know age is just a number, but it's part of the science</p>
 
-<div class="container">
-        <h1>How Old Are You?</h1>
-        <p class="subtitle">We know age is just a number, but it's part of the science</p>
+   <div class="form-container">
+     <div class="form-group">
+       <label for="birthdate">Enter Date</label>
+       <hr>
+       <div class="input-group">
+        <input type="date" id="birthdate" name="birthdate">
+         <div class="calendar-icon">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+             <line x1="16" y1="2" x2="16" y2="6"></line>
+             <line x1="8" y1="2" x2="8" y2="6"></line>
+             <line x1="3" y1="10" x2="21" y2="10"></line>
+           </svg>
+         </div>
+       </div>
+     </div>
+     <button class="age-button" onclick="calculateAge()">Show your age</button>
+     <div id="age-result" class="age-display" style="display: none;"></div>
+   </div>
 
-        <div class="form-container">
-            <div class="form-group">
-                <label for="date">Enter Date</label>
-                <hr>
-                <div class="input-group">
-                    <input type="text" id="date" placeholder="02/20/2024">
-                    <div class="calendar-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-            <button>Show your age</button>
-        </div>
+   <div class="gender-section">
+     <div class="gender-text">
+       <h2 class="gender-title">WHAT IS YOUR GENDER?</h2>
+       <p class="gender-info">Fragrances can be categorised into masculine and feminine ones.</p>
+       <p class="gender-info">Knowing your gender helps us offer a more accurate recommendation.</p>
+     </div>
+     <div class="gender-options">
+       <button class="gender-button male" onclick="selectGender(this, 'male')">Male</button>
+       <button class="gender-button female" onclick="selectGender(this, 'female')">Female</button>
+     </div>
+   </div>
 
-        <div class="gender-section">
-            <div class="gender-text">
-                <h2 class="gender-title">WHAT IS YOUR GENDER?</h2>
-                <p class="gender-info">Fragrances can be categorised into masculine and feminine ones.</p>
-                <p class="gender-info">Knowing your gender helps us offer a more accurate recommendation.</p>
-            </div>
-            <div class="gender-options">
-                <button class="gender-button male">Male</button>
-                <button class="gender-button female">Female</button>
-                <button class="gender-button neutral">Netral</button>
-            </div>
-        </div>
+   <form action="/scent-matcher-login" method="get">
+     <input type="hidden" name="page" value="2" />
+     <button class="next-button" onclick="proceedNext(event)">Next</button>
+   </form>
 
-        <form action="/scent-matcher-login" method="get">
-            <input type="hidden" name="page" value="6" />
-            <button>Next</button>
-        </form>
+ </div>
 
+<script>
+let selectedGender = null;
+let calculatedAge = null;
 
-    </div>
+function calculateAge() {
+    const birthdateInput = document.getElementById('birthdate');
+    let birthdate = birthdateInput.value;
+
+    if (!birthdate) {
+        alert('Please select your birth date first!');
+        return;
+    }
+
+    // If input is in mm/dd/yyyy, convert to yyyy-mm-dd
+    if (birthdate.includes('/')) {
+        // mm/dd/yyyy or m/d/yyyy
+        const [month, day, year] = birthdate.split('/');
+        birthdate = `${year.padStart(4, '0')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        birthdateInput.value = birthdate; // update input to correct format
+    }
+
+    const [year, month, day] = birthdate.split('-');
+    birthdateInput.value = `${year}-${month}-${day}`;
+
+    const today = new Date();
+    const birth = new Date(birthdate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+
+    calculatedAge = age;
+    const ageResult = document.getElementById('age-result');
+    ageResult.textContent = `You are ${age} years old`;
+    ageResult.style.display = 'block';
+
+    // Add a nice animation
+    ageResult.style.opacity = '0';
+    ageResult.style.transform = 'translateY(10px)';
+    setTimeout(() => {
+        ageResult.style.transition = 'all 0.3s ease';
+        ageResult.style.opacity = '1';
+        ageResult.style.transform = 'translateY(0)';
+    }, 100);
+}
+
+function selectGender(button, gender) {
+  document.querySelectorAll('.gender-button').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  button.classList.add('selected');
+  selectedGender = gender;
+}
+
+function proceedNext(event) {
+  // Validasi dan konversi format tanggal
+  if (!calculatedAge || !selectedGender) {
+    alert('Please complete the form.');
+    event.preventDefault();
+    return false;
+  }
+
+  // Simpan ke localStorage
+  localStorage.setItem("birth_date", document.getElementById('birthdate').value);
+  localStorage.setItem("gender", selectedGender);
+  return true;
+}
+
+// Set today's date as max for birthdate input
+document.getElementById('birthdate').max = new Date().toISOString().split('T')[0];
+</script>

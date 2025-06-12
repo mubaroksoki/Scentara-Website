@@ -10,22 +10,10 @@
     <link rel="stylesheet" href="css/scent-matcher/quetion-page3.css">
 </head>
 <body>
-   <% if (!showPage4) { %>
-    <%- include('partials/header.ejs') %>
-  <% } %>
+   <%- include('partials/header.ejs') %>
 
   <main>
-    <% if (showPage1) { %>
-      <%- include('partials/scentmatcher-section/quetion-page1.ejs') %>
-    <% } else if (showPage2) { %>
-      <%- include('partials/scentmatcher-section/quetion-page2.ejs') %>
-    <% } else if (showPage3) { %>
-      <%- include('partials/scentmatcher-section/quetion-page3.ejs') %>
-    <% } else if (showPage4) { %>
-      <%- include('scent-result.ejs') %>
-    <% } else { %>
-      <%- include('partials/scentmatcher-section/main-matcher.ejs') %>
-    <% } %>
+     <%- include('main-matcher.ejs') %>
   </main>
 </body>
 </html>

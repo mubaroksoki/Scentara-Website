@@ -1,0 +1,141 @@
+<h1>Scent Matcher</h1>
+    <div class="description">
+        <p>Fragrance should feel personal—because it is.</p>
+        <p>Answer a few quick questions, and we'll curate a Discovery Kit with four scents just for you.</p>
+</div>
+
+<form action="/scent-matcher" method="get">
+  <input type="hidden" name="page" value="1">
+  <button class="quiz-button">Take Quiz</button>
+</form>
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Sign In Required</h2>
+    <p>You need to sign in to use the Scent Matcher feature.</p>
+    <div class="modal-buttons">
+      <button onclick="window.location.href='/sign-in-at-matcher'">Yes, Sign In</button>
+      <button onclick="closeModal()">No, Thanks</button>
+    </div>
+  </div>
+</div>
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  max-width: 350px;
+  width: 90%;
+  position: fixed;
+  text-align: center;
+  animation: modalFadeIn 0.2s;
+  /* Center the modal */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes modalFadeIn {
+  from { transform: translate(-50%, -60%); opacity: 0; }
+  to { transform: translate(-50%, -50%); opacity: 1; }
+}
+
+/* Rest of your existing CSS remains the same */
+.close {
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close:hover {
+  color: #333;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: #222;
+}
+
+.modal-content p {
+  color: #555;
+  margin: 1rem 0 1.5rem 0;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modal-buttons button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.modal-buttons button:last-child {
+  background: #e0e0e0;
+  color: #222;
+}
+
+.modal-buttons button:hover {
+  background: #444;
+}
+
+.modal-buttons button:last-child:hover {
+  background: #ccc;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const quizButton = document.querySelector('.quiz-button');
+  const modal = document.getElementById('loginModal');
+  let modalPosition = { x: '50%', y: '50%' };
+  
+  quizButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      modal.style.display = 'block';
+      const modalContent = modal.querySelector('.modal-content');
+      modalContent.style.left = modalPosition.x;
+      modalContent.style.top = modalPosition.y;
+    } else {
+      window.location.href = '/scent-matcher-login?page=1';
+    }
+  });
+
+  window.closeModal = function() {
+    const modalContent = modal.querySelector('.modal-content');
+    modalPosition = {
+      x: modalContent.style.left,
+      y: modalContent.style.top
+    };
+    modal.style.display = 'none';
+    window.location.href = '/';
+  }
+
+  document.querySelector('.close').addEventListener('click', closeModal);
+});
+</script>

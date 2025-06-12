@@ -1,4 +1,53 @@
-// sign-up.js - Frontend JavaScript untuk integrasi dengan backend AWS
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/signup.css">
+    <title><%- title %></title>
+</head>
+<body>
+    <div class="logo"><%- logo %> </div>
+
+    <div class="container">
+        <div class="signup-form">
+            <h1>Sign up to Scentara</h1>
+            
+            <div class="form-group">
+                <label for="firstName">Name</label>
+                <input type="text" id="firstName" placeholder="Enter your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="Enter your password">
+                    <div class="password-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" id="signupBtn">CREATE AN ACCOUNT</button>
+
+            <div class="signin-link">
+                already have an account? <a href="/sign-in-at-matcher">Sign in</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+
 
 document.addEventListener("DOMContentLoaded", function () {
   const signupBtn = document.getElementById("signupBtn");
@@ -62,23 +111,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       // Call backend API
-      const response = await fetch("Link Backend API Endpoint", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        "Link Backend API Endpoint",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            password: password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok && !data.error) {
         // Success - redirect to success page
-        window.location.href = `/register-success?message=${encodeURIComponent(
+        window.location.href = `/signup-success-at-matcher?message=${encodeURIComponent(
           data.message
         )}&userId=${data.data.userId}`;
       } else {
@@ -150,3 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+</script>
+
+</html>

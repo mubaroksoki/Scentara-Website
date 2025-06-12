@@ -1,36 +1,116 @@
-<div class="container">
+<div class="container"></div>
+    <form action="/scent-matcher-login" method="get">
         <div class="header">
             <div class="question">How strong do you like your perfume?</div>
-            <div class="strength-options">
-                <div class="option">
-                    <div class="option-box subtle"></div>
-                    <div class="option-label">subtle</div>
-                </div>
-                <div class="option">
-                    <div class="option-box balanced"></div>
-                    <div class="option-label">balanced</div>
-                </div>
-                <div class="option">
-                    <div class="option-box strong"></div>
-                    <div class="option-label">strong</div>
+            <div class="strength-selector">
+                <div class="strength-options">
+                    <div class="option">
+                        <div class="option-box subtle" data-value="subtle" onclick="selectStrength(this)"></div>
+                        <div class="option-label">subtle</div>
+                    </div>
+                    <div class="option">
+                        <div class="option-box balanced" data-value="balanced" onclick="selectStrength(this)"></div>
+                        <div class="option-label">balanced</div>
+                    </div>
+                    <div class="option">
+                        <div class="option-box strong" data-value="strong" onclick="selectStrength(this)"></div>
+                        <div class="option-label">strong</div>
+                    </div>
                 </div>
             </div>
-        </div> 
+        </div>
 
         <div class="style-options">
-            <div class="style-option fresh">Fresh & Elegant</div>
-            <div class="style-option seductive">Seductive & Bold</div>
+            <div class="style-option fresh" data-value="fresh_elegant" onclick="selectFeel(this)">Fresh & Elegant</div>
+            <div class="style-option seductive" data-value="seductive_bold" onclick="selectFeel(this)">Seductive & Bold</div>
         </div>
 
         <div class="button-container">
-            <form action="/scent-matcher-login" method="get" style="display: inline-block;">
-                <input type="hidden" name="page" value="6" />
-                <button class="button">Back</button>
-            </form>
-
-            <form action="/scent-matcher-login" method="get" style="display: inline-block;">
-                 <input type="hidden" name="page" value="8" />
-                <button class="button">Prompt it</button>
-            </form>
+            <button class="button" type="submit" name="page" value="2">back</button>
+            <button class="button" type="button" onclick="submitRecommendation()">Get Recommendation</button>
         </div>
-    </div>
+    </form>
+</div>
+<script>
+let selectedStrength = null;
+let selectedFeel = null;
+
+function selectStrength(element) {
+  document.querySelectorAll('.option-box').forEach(box => {
+    box.classList.remove('selected');
+  });
+  element.classList.add('selected');
+  selectedStrength = element.getAttribute('data-value');
+}
+
+function selectFeel(element) {
+  document.querySelectorAll('.style-option').forEach(opt => {
+    opt.classList.remove('selected');
+  });
+  element.classList.add('selected');
+  selectedFeel = element.getAttribute('data-value');
+}
+
+async function submitRecommendation() {
+  if (!selectedStrength || !selectedFeel) {
+    alert('Please select both strength and feel.');
+    return;
+  }
+
+  // Dapatkan data dari localStorage
+  const requestBody = {
+    birth_date: localStorage.getItem('birth_date'),
+    gender: localStorage.getItem('gender'),
+    fragrance_profiles: JSON.parse(localStorage.getItem('fragrance_profiles')),
+    strength: selectedStrength,
+    feel: selectedFeel
+  };
+
+  // Dapatkan token
+  const auth_token = localStorage.getItem('token');
+
+  // Tampilkan loading
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.id = 'apiLoading';
+  loadingIndicator.style = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;';
+  loadingIndicator.innerHTML = '<div style="color: white; font-size: 24px;">Getting recommendations...</div>';
+  document.body.appendChild(loadingIndicator);
+
+  try {
+    const response = await fetch(
+      'Link Backend API Endpoint',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth_token}`
+        },
+        body: JSON.stringify(requestBody)
+      }
+    );
+
+    const result = await response.json();
+
+    // Cek jika error authentication
+    if (result.error && result.message && result.message.toLowerCase().includes('authentication')) {
+      alert('Authentication required. Please login.');
+      window.location.href = '/scent-matcher-login'; // Redirect ke halaman login
+      return;
+    }
+
+    if (result.error) {
+      throw new Error(result.message);
+    }
+
+    // Simpan hasil rekomendasi
+    localStorage.setItem('recommendation_result', JSON.stringify(result.data));
+    window.location.href = '/scent-result-login';
+    
+  } catch (error) {
+    console.error('Recommendation error:', error);
+    alert(`Failed to get recommendations: ${error.message}`);
+  } finally {
+    document.body.removeChild(loadingIndicator);
+  }
+}
+</script>
